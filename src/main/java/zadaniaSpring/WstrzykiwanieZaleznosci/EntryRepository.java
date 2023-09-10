@@ -1,13 +1,16 @@
 package zadaniaSpring.WstrzykiwanieZaleznosci;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
-
+@Repository
 class EntryRepository {
     private List<Entry> entries;
-
-    EntryRepository() {
-        FileService fileService = new FileService();
+@Autowired
+    EntryRepository(FileService fileService) {
         try {
             this.entries = fileService.readAllFile();
         } catch (IOException e) {

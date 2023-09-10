@@ -1,14 +1,24 @@
 package zadaniaSpring.WstrzykiwanieZaleznosci;
 
+import org.springframework.stereotype.Controller;
+
+import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.Set;
 
+@Controller
 class LinguController {
     private static final int TEST_SIZE = 10;
-    private final EntryRepository entryRepository = new EntryRepository();
-    private final FileService fileService = new FileService();
-    private final Scanner scanner = new Scanner(System.in);
+    private final EntryRepository entryRepository;
+    private final FileService fileService;
+    private final Scanner scanner;
+
+    public LinguController(EntryRepository entryRepository, FileService fileService, Scanner scanner) {
+        this.entryRepository = entryRepository;
+        this.fileService = fileService;
+        this.scanner = scanner;
+    }
 
     void mainLoop() {
         System.out.println("Witaj w aplikacji LinguApp");
