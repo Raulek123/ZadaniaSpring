@@ -2,7 +2,6 @@ package zadaniaSpring.WstrzykiwanieZaleznosci;
 
 import org.springframework.stereotype.Controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.Set;
@@ -13,23 +12,28 @@ class LinguController {
     private final EntryRepository entryRepository;
     private final FileService fileService;
     private final Scanner scanner;
+    private final ConsoleOutputWriter consoleOutputWriter;
 
-    public LinguController(EntryRepository entryRepository, FileService fileService, Scanner scanner) {
+    public LinguController(EntryRepository entryRepository,
+                           FileService fileService,
+                           Scanner scanner,
+                           ConsoleOutputWriter consoleOutputWriter) {
         this.entryRepository = entryRepository;
         this.fileService = fileService;
         this.scanner = scanner;
+        this.consoleOutputWriter = consoleOutputWriter;
     }
 
     void mainLoop() {
-        System.out.println("Witaj w aplikacji LinguApp");
+        consoleOutputWriter.println("Witaj w aplikacji LinguApp");
         Option option = null;
         do {
-            printMenu();
+            printlnMenu();
             try {
                 option = chooseOption();
                 executeOption(option);
             } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
+                consoleOutputWriter.println(e.getMessage());
             }
         } while (option != Option.EXIT);
     }
@@ -49,30 +53,30 @@ class LinguController {
     }
 
     private void startTest() {
-        if(entryRepository.isEmpty()) {
-            System.out.println("Dodaj przynajmniej jedną frazę do bazy.");
+        if (entryRepository.isEmpty()) {
+            consoleOutputWriter.println("Dodaj przynajmniej jedną frazę do bazy.");
             return;
         }
         final int testSize = Math.min(entryRepository.size(), TEST_SIZE);
         Set<Entry> randomEntries = entryRepository.getRandomEntries(testSize);
         int score = 0;
         for (Entry entry : randomEntries) {
-            System.out.printf("Podaj tłumaczenie dla :\"%s\"\n", entry.getOriginal());
+            consoleOutputWriter.println(String.format("Podaj tłumaczenie dla :\"%s\"\n", entry.getOriginal()));
             String translation = scanner.nextLine();
-            if(entry.getTranslation().equalsIgnoreCase(translation)) {
-                System.out.println("Odpowiedź poprawna");
+            if (entry.getTranslation().equalsIgnoreCase(translation)) {
+                consoleOutputWriter.println("Odpowiedź poprawna");
                 score++;
             } else {
-                System.out.println("Odpowiedź niepoprawna - " + entry.getTranslation());
+                consoleOutputWriter.println("Odpowiedź niepoprawna - " + entry.getTranslation());
             }
         }
-        System.out.printf("Twój wynik: %d/%d\n", score, testSize);
+        consoleOutputWriter.println(String.format("Twój wynik: %d/%d\n", score, testSize));
     }
 
     private void addEntry() {
-        System.out.println("Podaj oryginalną frazę");
+        consoleOutputWriter.println("Podaj oryginalną frazę");
         String original = scanner.nextLine();
-        System.out.println("Podaj tłumaczenie");
+        consoleOutputWriter.println("Podaj tłumaczenie");
         String translation = scanner.nextLine();
         Entry entry = new Entry(original, translation);
         entryRepository.add(entry);
@@ -81,19 +85,20 @@ class LinguController {
     private void close() {
         try {
             fileService.saveEntries(entryRepository.getAll());
-            System.out.println("Zapisano stan aplikacji");
+            consoleOutputWriter.println("Zapisano stan aplikacji");
         } catch (IOException e) {
-            System.out.println("Nie udało się zapisać zmian");
+            consoleOutputWriter.println("Nie udało się zapisać zmian");
         }
-        System.out.println("Bye Bye!");
+        consoleOutputWriter.println("Bye Bye!");
     }
 
-    private void printMenu() {
-        System.out.println("Wybierz opcję:");
+    private void printlnMenu() {
+        consoleOutputWriter.println("Wybierz opcję:");
         for (Option option : Option.values()) {
-            System.out.println(option);
+            consoleOutputWriter.println(option.toString());
         }
     }
+
     private static enum Option {
         ADD_ENTRY(1, "Dodaj tekst z tłumaczeniem"),
         START_TEST(2, "Rozpocznij test"),

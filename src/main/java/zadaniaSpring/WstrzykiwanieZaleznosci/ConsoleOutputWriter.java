@@ -1,7 +1,19 @@
 package zadaniaSpring.WstrzykiwanieZaleznosci;
 
-public class ConsoleOutputWriter {
-    public void print(String text) {
-        System.out.println(text);
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ConsoleOutputWriter{
+    private final TextFormatter textFormatter;
+
+    @Autowired
+    ConsoleOutputWriter(TextFormatter textFormatter) {
+        this.textFormatter = textFormatter;
     }
+
+    void println(String text) {
+        System.out.println(textFormatter.upperCaseTextFormatter(text));
+    }
+
 }

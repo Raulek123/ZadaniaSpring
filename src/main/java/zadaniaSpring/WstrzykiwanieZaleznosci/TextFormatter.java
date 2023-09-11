@@ -1,5 +1,5 @@
 package zadaniaSpring.WstrzykiwanieZaleznosci;
 
 public interface TextFormatter {
-    String UpperCaseTextFormatter(String text);
+    String upperCaseTextFormatter(String text);
 }
