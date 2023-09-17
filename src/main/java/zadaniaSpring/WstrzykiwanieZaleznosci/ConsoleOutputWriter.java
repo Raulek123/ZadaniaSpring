@@ -2,6 +2,7 @@ package zadaniaSpring.WstrzykiwanieZaleznosci;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import zadaniaSpring.WstrzykiwanieZaleznosci.formatter.TextFormatter;
 
 @Service
 public class ConsoleOutputWriter{

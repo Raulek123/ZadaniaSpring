@@ -1,4 +1,4 @@
-package zadaniaSpring.WstrzykiwanieZaleznosci;
+package zadaniaSpring.WstrzykiwanieZaleznosci.formatter;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;

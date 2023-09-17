@@ -2,6 +2,8 @@ package zadaniaSpring.WstrzykiwanieZaleznosci;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import zadaniaSpring.WstrzykiwanieZaleznosci.crypto.CaesarCipherService;
+import zadaniaSpring.WstrzykiwanieZaleznosci.crypto.CipherService;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -12,16 +14,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 @Service
 class FileService {
-    private String fileName;
+    private final String fileName;
+    private final CipherService cipherService;
 
 
-    public FileService(@Value("${app.filename}")String fileName) {
+    public FileService(@Value("${app.filename}")String fileName, CipherService cipherService) {
         this.fileName = fileName;
+        this.cipherService = cipherService;
     }
 
     List<Entry> readAllFile() throws IOException {
         return Files.readAllLines(Paths.get(fileName))
                 .stream()
+                .map(cipherService::decrypt)
                 .map(CsvEntryConverter::parse)
                 .collect(Collectors.toList());
     }
@@ -29,7 +34,7 @@ class FileService {
     void saveEntries(List<Entry> entries) throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
         for (Entry entry : entries) {
-            writer.write(entry.toString());
+            writer.write(cipherService.encrypt(entry.toString()));
             writer.newLine();
         }
         writer.close();
